@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sinus-Training Kurztest</title>
+<style>
+html{-webkit-text-size-adjust:100%}body{margin:0}[hidden]{display:none!important}
+/* Layout: eine ruhige Spalte, viel Weißraum, eine Akzentfarbe, Graphen auf hellem Raster */
+:root{
+  --bg:#ffffff;--soft:#f3f5f8;--fg:#10151d;--muted:#667085;--line:#e3e7ee;--grid:#dfe4ec;--axis:#39424f;
+  --accent:#2457e6;--accent-fg:#ffffff;--curve:#2457e6;--curve2:#e2572b;
+  --ok:#12805c;--ok-bg:#e6f5ee;--bad:#c2362b;--bad-bg:#fceceb;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1116;--soft:#181d25;--fg:#eceff4;--muted:#98a2b3;--line:#262d38;--grid:#272e3a;--axis:#b6bfcc;
+  --accent:#7da2ff;--accent-fg:#0b1020;--curve:#7da2ff;--curve2:#ff8a5c;
+  --ok:#5fd0a0;--ok-bg:#12291f;--bad:#ff8f85;--bad-bg:#331a18;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1116;--soft:#181d25;--fg:#eceff4;--muted:#98a2b3;--line:#262d38;--grid:#272e3a;--axis:#b6bfcc;
+  --accent:#7da2ff;--accent-fg:#0b1020;--curve:#7da2ff;--curve2:#ff8a5c;
+  --ok:#5fd0a0;--ok-bg:#12291f;--bad:#ff8f85;--bad-bg:#331a18;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--sans);padding-block:32px 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+h1{font-size:1.15rem;font-weight:600;margin:0;letter-spacing:-.01em}
+h2{font-size:1.6rem;font-weight:600;margin:0;letter-spacing:-.02em;line-height:1.25;text-wrap:balance}
+h3{font-size:1rem;font-weight:600;margin:0}
+p{margin:0}
+.muted{color:var(--muted)}
+.m{white-space:nowrap;font-variant-numeric:tabular-nums}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.8em;line-height:1.2;margin:0 .12em}
+.fr>span:first-child{border-bottom:1px solid currentColor;padding:0 .2em}
+.seg{display:grid;grid-template-columns:repeat(15,1fr);gap:4px;list-style:none;margin:0;padding:0}
+.seg li{height:4px;border-radius:2px;background:var(--line)}
+.seg li.ok{background:var(--ok)}.seg li.bad{background:var(--bad)}.seg li.cur{background:var(--fg)}
+#main{display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-size:.85rem;color:var(--muted);font-weight:500}
+.q{font-size:1.15rem;line-height:1.55}
+.term{font-size:1.4rem;text-align:center;padding:4px 0}
+canvas{display:block;width:100%;aspect-ratio:2/1;border-radius:12px;background:var(--soft)}
+.opts{display:grid;gap:10px}
+.opts.g{grid-template-columns:repeat(2,minmax(0,1fr))}
+.opts.g canvas{aspect-ratio:16/10;border-radius:8px}
+@media (max-width:560px){.opts.g{grid-template-columns:1fr}}
+.opt{display:flex;gap:14px;align-items:center;text-align:left;font:inherit;color:inherit;background:var(--soft);
+  border:1.5px solid transparent;border-radius:12px;padding:13px 16px;cursor:pointer;min-width:0;transition:border-color .12s}
+.opts.g .opt{flex-direction:column;align-items:stretch;gap:6px;padding:8px}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt .k{font-weight:600;color:var(--muted);flex:none;width:1.1em;font-size:.9rem}
+.opts.g .k{width:auto;padding-left:6px}
+.opt .cap{font-size:.9rem;color:var(--muted);padding:0 6px 4px}
+.opt.right{border-color:var(--ok);background:var(--ok-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px}
+.fb{border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.fb.ok{background:var(--ok-bg)}.fb.bad{background:var(--bad-bg)}
+.fb strong.ok{color:var(--ok)}.fb strong.bad{color:var(--bad)}
+.btn{font:inherit;font-weight:600;background:var(--fg);color:var(--bg);border:0;border-radius:999px;padding:12px 26px;cursor:pointer;align-self:flex-start}
+.btn.sec{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line)}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.sls{display:grid;gap:6px}
+.sl{display:grid;grid-template-columns:1.2em minmax(0,1fr);gap:12px;align-items:center}
+.sl label{font-style:italic;font-size:1.1rem;font-weight:500}
+input[type=range]{width:100%;accent-color:var(--accent);height:28px}
+.steps{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:10px}
+.score{font-size:3rem;font-weight:600;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.topic{border-top:1px solid var(--line);padding-top:16px;display:flex;flex-direction:column;gap:6px}
+.topic ul{margin:0;padding-left:1.2em;color:var(--muted);font-size:.95rem}
+.cnt{color:var(--bad);font-weight:500;font-size:.9rem}
+.box{border-top:1px solid var(--line);padding-top:24px;display:flex;flex-direction:column;gap:14px}
+textarea{width:100%;min-height:260px;font:14px/1.55 var(--sans);color:var(--fg);background:var(--soft);border:0;border-radius:12px;padding:14px;resize:vertical}
+.note{font-size:.9rem;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>Quiz zu allgemeiner Sinusfunktion</h1>
+  <ol class="seg" id="seg" aria-label="Fortschritt" hidden></ol>
+  <main id="main"></main>
+</div>
+
+<script>
+const P=Math.PI,S=Math.sin,C=Math.cos;
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const R=(n,d=1)=>{if(d<0){n=-n;d=-d;}const g=gcd(Math.abs(n),d)||1;return{n:n/g,d:d/g,v:n/d};};
+const Q=x=>typeof x==='object'?x:R(Math.round(x*24),24);
+const ab=q=>R(Math.abs(q.n),q.d),mul=(p,q)=>R(p.n*q.n,p.d*q.d),dv=(p,q)=>R(p.n*q.d,p.d*q.n);
+const Z=R(0),ONE=R(1),TWO=R(2);
+const de=n=>(Math.round(n*100)/100).toLocaleString('de-DE').replace('-','−');
+const fr=(a,b)=>`<span class="fr"><span>${a}</span><span>${b}</span></span>`;
+const M=s=>`<span class="m">${s.replace(/(?<![A-Za-z])([fghuxyzabcdp])(?![A-Za-z])/g,'<i>$1</i>')}</span>`;
+const H=q=>(q.n<0?'−':'')+(q.d===1?Math.abs(q.n):fr(Math.abs(q.n),q.d));
+const T=q=>(q.n<0?'−':'')+Math.abs(q.n)+(q.d===1?'':'/'+q.d);
+const piH=q=>{if(!q.n)return'0';const a=Math.abs(q.n),t=(a===1?'':a)+'π';return(q.n<0?'−':'')+(q.d===1?t:fr(t,q.d));};
+const piT=q=>{if(!q.n)return'0';const a=Math.abs(q.n);return(q.n<0?'−':'')+(a===1?'':a)+'π'+(q.d===1?'':'/'+q.d);};
+const coef=a=>a.v===1?'':a.v===-1?'−':H(a)+'·';
+const arg=b=>b.v===1?'x':H(b)+'x';
+const pl=(q,f=H)=>!q.n?'':(q.n>0?' + ':' − ')+f(ab(q));
+const trig=(a,b,c,d,fn='sin')=>coef(Q(a))+fn+'('+arg(Q(b))+pl(Q(c),piH)+')'+pl(Q(d));
+const par=q=>q.n<0?'('+H(q)+')':H(q);
+
+const WN={x:[-P,2*P],n:1,d:2,pi:true},WW={x:[-2*P,4*P],n:1,d:1,pi:true};
+const WNs={x:[-P,3*P],n:1,d:4,xl:2,pi:true},WWs={x:[-2*P,4*P],n:1,d:2,xl:2,pi:true};
+const yw=v=>v<=1?{y:[-1.5,1.5],yt:.5}:(m=>({y:[-m,m],yt:1}))(Math.max(2,Math.ceil(v+.4)));
+const Y4={y:[-4,4],yt:1};
+
+const TOPICS={
+ AMP:{name:'Amplitude',rule:'Die Amplitude ist |a| und nie negativ. Aus dem Graphen: (Maximum − Minimum) : 2. Der Faktor a wirkt in y-Richtung, b in x-Richtung.'},
+ PER:{name:'Periodenlänge und b',rule:'p = 2π/b und umgekehrt b = 2π/p. Großes b bedeutet kurze Periode. Prüfe, ob die x-Achse in Vielfachen von π oder in Zahlen beschriftet ist.'},
+ PHASE:{name:'Verschiebung in x-Richtung',rule:'Erst b ausklammern: sin(b·x + c) = sin(b·(x + c/b)). Bei „+“ in der Klammer geht es nach links, bei „−“ nach rechts, jeweils um |c/b|.'},
+ REFL:{name:'Spiegelung und Vorzeichen',rule:'Ein negatives a spiegelt den Graphen an der Mittellage y = d. Es gilt sin(−x) = −sin(x) und cos(−x) = cos(x).'},
+ VERT:{name:'Verschiebung in y-Richtung und Wertemenge',rule:'d ist die Mittellage: d = (Maximum + Minimum) : 2. Wertemenge W = [d − |a|; d + |a|].'},
+ COS:{name:'Zusammenhang Sinus – Kosinus',rule:'cos(x) = sin(x + π/2). Bei x = 0 hat der Kosinus einen Hochpunkt, der Sinus geht dort steigend durch die Mittellage.'}
+};
+
+/* ---------- Aufgabengeneratoren ---------- */
+function g1(a,b){a=Q(a);b=Q(b);const A=ab(a),p=dv(TWO,b);
+  const o=(am,pe)=>`Amplitude ${M(H(am))}, Periodenlänge ${M(piH(pe))}`;
+  return{t:'mc',q:`Gegeben ist ${M('f(x) = '+trig(a,b,Z,Z))}. Welche Angabe stimmt?`,
+   o:[{h:o(A,p),ok:1},
+      {h:o(a,p),tag:'AMP',why:'Amplitude negativ angegeben. Die Amplitude ist der Betrag |a|'},
+      {h:o(A,mul(TWO,b)),tag:'PER',why:'2π·b statt 2π/b gerechnet'},
+      {h:o(A,dv(ONE,b)),tag:'PER',why:'π/b statt 2π/b gerechnet'}],
+   e:`${M('a = '+H(a))}, also Amplitude ${M('|a| = '+H(A))}. ${M('b = '+H(b))}, also ${M('p = '+fr('2π','b')+' = '+piH(p))}.`};}
+
+function g2(a,k){a=Q(a);k=Q(k);const p=dv(TWO,k);
+  return{t:'mc',q:`Welche Periodenlänge hat ${M('f(x) = '+coef(a)+'sin('+piH(k)+'·x)')}?`,
+   o:[{h:M(H(p)),ok:1},
+      {h:M(piH(p)),tag:'PER',why:`bei b = ${piT(k)} das π übersehen und mit b = ${T(k)} gerechnet`},
+      {h:M(piH(k)),tag:'PER',why:'b selbst als Periodenlänge angegeben'},
+      {h:M(H(dv(k,TWO))),tag:'PER',why:'Kehrwert gebildet: b/(2π) statt 2π/b'}],
+   e:`${M('b = '+piH(k))}, also ${M('p = '+fr('2π','b')+' = '+H(p))}. Das π kürzt sich, die Periode ist eine Zahl ohne π.`};}
+
+function g3(a,b,d){const A=Math.abs(a),W=(l,h)=>M('W = ['+H(Q(l))+'; '+H(Q(h))+']');
+  return{t:'mc',q:`Welche Wertemenge hat ${M('f(x) = '+trig(a,b,Z,d))}?`,
+   o:[{h:W(d-A,d+A),ok:1},
+      {h:W(-A,A),tag:'VERT',why:`Verschiebung d = ${T(Q(d))} in y-Richtung bei der Wertemenge vergessen`},
+      {h:W(-d-A,-d+A),tag:'VERT',why:`Graph in die falsche y-Richtung verschoben (Vorzeichen von d)`},
+      {h:W(d-b,d+b),tag:'AMP',why:`b = ${T(Q(b))} als Amplitude benutzt statt |a| = ${T(Q(A))}`}],
+   e:`Mittellage ${M('d = '+H(Q(d)))}, Amplitude ${M('|a| = '+H(Q(A)))}. Also ${M('W = [d − |a|; d + |a|] = ['+H(Q(d-A))+'; '+H(Q(d+A))+']')}.`};}
+
+function g4(a,b,s,fn='sin'){b=Q(b);const t=(sg,ng,f)=>coef(Q(sg*a))+f+'('+(ng?'−':'')+arg(b)+')';
+  const q=`Welcher Term beschreibt denselben Graphen wie ${M('f(x) = '+t(s,1,fn))}?`;
+  if(fn==='cos')return{t:'mc',q,
+   o:[{h:M(t(s,0,'cos')),ok:1},
+      {h:M(t(-s,0,'cos')),tag:'REFL',why:'Regel des Sinus auf den Kosinus übertragen. Für den Kosinus gilt cos(−z) = cos(z), das Vorzeichen des Faktors bleibt'},
+      {h:M(t(-s,1,'cos')),tag:'REFL',why:'Vorzeichen des Faktors geändert. Wegen cos(−z) = cos(z) ändert das Minus im Argument am Graphen nichts'},
+      {h:M(t(-s,0,'sin')),tag:'COS',why:'cos(−z) mit −sin(z) verwechselt'}],
+   e:`${M('cos(−z) = cos(z)')}: Der Graph des Kosinus ist achsensymmetrisch zur ${M('y')}-Achse, das Minus im Argument fällt ersatzlos weg. Also ${M(t(s,1,'cos')+' = '+t(s,0,'cos'))}.`};
+  return{t:'mc',q,
+   o:[{h:M(t(-s,0,'sin')),ok:1},
+      {h:M(t(s,0,'sin')),tag:'REFL',why:'Minus im Argument einfach weggelassen. Das geht nur beim Kosinus. Für den Sinus gilt sin(−z) = −sin(z)'},
+      {h:M(t(-s,1,'sin')),tag:'REFL',why:'Vorzeichen des Faktors geändert, aber das Minus im Argument stehen gelassen'},
+      {h:M(t(-s,0,'cos')),tag:'COS',why:'sin(−z) mit cos(z) verwechselt'}],
+   e:`${M('sin(−z) = −sin(z)')}: Der Graph des Sinus ist punktsymmetrisch zum Ursprung. Das Minus aus dem Argument wandert vor den Faktor: ${M(t(s,1,'sin')+' = '+t(-s,0,'sin'))}.`};}
+
+function g5(a,sh,dir){a=Q(a);sh=Q(sh);const r=dir<0?'rechts':'links',l=dir<0?'links':'rechts',F=M(H(a)),V=M(piH(sh));
+  return{t:'mc',q:`Wie entsteht der Graph von ${M('g(x) = '+coef(a)+'sin(x'+(dir<0?' − ':' + ')+piH(sh)+')')} aus dem Graphen von ${M('f(x) = sin(x)')}?`,
+   o:[{h:`Streckung in y-Richtung mit Faktor ${F}, Verschiebung um ${V} nach ${r}`,ok:1},
+      {h:`Streckung in y-Richtung mit Faktor ${F}, Verschiebung um ${V} nach ${l}`,tag:'PHASE',why:`Verschiebungsrichtung vertauscht: (x ${dir<0?'−':'+'} …) verschiebt nach ${r}`},
+      {h:`Streckung in x-Richtung mit Faktor ${F}, Verschiebung um ${V} nach ${r}`,tag:'AMP',why:'Faktor a der x-Richtung zugeordnet. a streckt in y-Richtung'},
+      {h:`Streckung in y-Richtung mit Faktor ${F}, Verschiebung um ${V} nach ${dir<0?'unten':'oben'}`,tag:'VERT',why:'Verschiebung im Argument als Verschiebung in y-Richtung gedeutet'}],
+   e:`Der Faktor vor dem Sinus streckt in y-Richtung. Der Summand im Argument verschiebt in x-Richtung: bei „−“ nach rechts, bei „+“ nach links. Eine Verschiebung in y-Richtung stünde als Summand hinter dem Sinus.`};}
+
+function g6(a,b,d){const A=Math.abs(a),f=(a,b,d)=>x=>a*S(b*x)+d,l=(a,b,d)=>M(trig(a,b,Z,d));
+  return{t:'gc',q:`Welcher Graph gehört zu ${M('f(x) = '+trig(a,b,Z,d))}?`,sp:{...(b<1?WW:WN),...Y4},
+   o:[{f:f(a,b,d),l:l(a,b,d),ok:1},
+      {f:f(a,1/b,d),l:l(a,1/b,d),tag:'PER',why:`Graph mit Periode ${piT(Q(2*b))} statt ${piT(Q(2/b))} gewählt (p = 2π/b)`},
+      {f:f(-a,b,d),l:l(-a,b,d),tag:'REFL',why:`gespiegelten Graphen gewählt: Bei x = 0 muss der Graph ${a>0?'steigend':'fallend'} durch die Mittellage gehen`},
+      {f:f(a,b,-d),l:l(a,b,-d),tag:'VERT',why:`Graph mit Mittellage y = ${T(Q(-d))} statt y = ${T(Q(d))} gewählt`}],
+   e:`Mittellage ${M('y = '+H(Q(d)))}, Amplitude ${M(H(Q(A)))} (Werte von ${M(H(Q(d-A)))} bis ${M(H(Q(d+A)))}), Periode ${M('p = '+fr('2π','b')+' = '+piH(Q(2/b)))}. Bei ${M('x = 0')} geht der Graph ${a>0?'steigend':'fallend'} durch die Mittellage.`};}
+
+function g8(a,b,c,dir){a=Q(a);b=Q(b);c=Q(c);const r=dir<0?'rechts':'links',l=dir<0?'links':'rechts',pm=dir<0?' − ':' + ',s=dv(c,b);
+  return{t:'mc',q:`Um wie viel ist der Graph von ${M('g(x) = '+coef(a)+'sin('+arg(b)+pm+piH(c)+')')} gegenüber dem Graphen von ${M(coef(a)+'sin('+arg(b)+')')} verschoben?`,
+   o:[{h:`um ${M(piH(s))} nach ${r}`,ok:1},
+      {h:`um ${M(piH(c))} nach ${r}`,tag:'PHASE',why:`b nicht ausgeklammert: ${piT(c)} direkt als Verschiebung abgelesen`},
+      {h:`um ${M(piH(s))} nach ${l}`,tag:'PHASE',why:'richtig ausgeklammert, aber Richtung vertauscht'},
+      {h:`um ${M(piH(mul(c,b)))} nach ${r}`,tag:'PHASE',why:'c mit b multipliziert statt durch b geteilt'}],
+   e:`Erst b ausklammern: ${M(coef(a)+'sin('+arg(b)+pm+piH(c)+') = '+coef(a)+'sin('+H(b)+'·(x'+pm+piH(s)+'))')}. Verschiebung um ${M(piH(s))} nach ${r}.`};}
+
+function g9(a,b){const p=Q(2/b);
+  return{t:'mc',q:'Welcher Term gehört zum abgebildeten Graphen?',sp:{...(b<1?WW:WN),...yw(a),fns:[{f:x=>a*S(b*x)}]},
+   o:[{h:M(trig(a,b,Z,Z)),ok:1},
+      {h:M(trig(a,1/b,Z,Z)),tag:'PER',why:'b = p/(2π) statt b = 2π/p gerechnet'},
+      {h:M(coef(Q(a))+'sin('+piH(p)+'·x)'),tag:'PER',why:`abgelesene Periode ${piT(p)} direkt als b eingesetzt`},
+      {h:M(trig(2*a,b,Z,Z)),tag:'AMP',why:'Abstand zwischen Maximum und Minimum als Amplitude genommen (nicht halbiert)'}],
+   e:`Maximum ${M(H(Q(a)))} und Minimum ${M(H(Q(-a)))}, also ${M('a = '+H(Q(a)))}. Eine volle Schwingung ist ${M(piH(p))} lang, also ${M('b = '+fr('2π','p')+' = '+H(Q(b)))}.`};}
+
+function g12(a,b,d){const mx=Q(d+a),mn=Q(d-a);
+  return{t:'mc',q:'Welcher Term gehört zum abgebildeten Graphen?',sp:{...(b<1?WW:WN),...yw(Math.abs(d)+a),fns:[{f:x=>a*S(b*x)+d}]},
+   o:[{h:M(trig(a,b,Z,d)),ok:1},
+      {h:M(trig(a,1/b,Z,d)),tag:'PER',why:`b und Periode vertauscht: p = ${piT(Q(2/b))} ergibt b = ${T(Q(b))}, nicht ${T(Q(1/b))}`},
+      {h:M(trig(2*a,b,Z,d)),tag:'AMP',why:'Abstand zwischen Maximum und Minimum als Amplitude genommen (nicht halbiert)'},
+      {h:M(trig(a,b,Z,d+a)),tag:'VERT',why:`Maximum ${T(mx)} als d abgelesen statt der Mittellage`}],
+   e:`Maximum ${M(H(mx))}, Minimum ${M(H(mn))}. Mittellage ${M('d = '+fr(H(mx)+' + '+par(mn),'2')+' = '+H(Q(d)))}, Amplitude ${M('a = '+fr(H(mx)+' − '+par(mn),'2')+' = '+H(Q(a)))}. Periode ${M(piH(Q(2/b)))}, also ${M('b = '+H(Q(b)))}.`};}
+
+function g13(a,k){const p=2/k,A=Q(a),K=Q(k),t=(a,fn,in_)=>M(coef(Q(a))+fn+'('+in_+')');
+  return{t:'mc',q:'Welcher Term gehört zum abgebildeten Graphen? Achte auf die Beschriftung der x-Achse.',
+   sp:{x:[-p/4,1.5*p],xt:p/4,pi:false,...yw(Math.abs(a)),fns:[{f:x=>a*C(k*P*x)}]},
+   o:[{h:t(a,'cos',piH(K)+'·x'),ok:1},
+      {h:t(a,'cos',arg(K)),tag:'PER',why:`Achsenskalierung nicht beachtet: Die Periode ist ${T(Q(p))} (ohne π), also b = ${piT(K)}`},
+      {h:t(-a,'cos',piH(K)+'·x'),tag:'REFL',why:`Spiegelung falsch: Der Graph hat bei x = 0 einen ${a<0?'Tiefpunkt':'Hochpunkt'}`},
+      {h:t(a,'sin',piH(K)+'·x'),tag:'COS',why:'Sinus und Kosinus verwechselt: Ein Sinus ohne Verschiebung geht bei x = 0 durch die Mittellage'}],
+   e:`Bei ${M('x = 0')} liegt ein ${a<0?'Tiefpunkt':'Hochpunkt'} mit ${M('y = '+H(A))}, also ein ${a<0?'gespiegelter ':''}Kosinus. Die Periode ist ${M(H(Q(p)))} (ohne π), also ${M('b = '+fr('2π',H(Q(p)))+' = '+piH(K))}.`};}
+
+function g14(a,z,d,tk,fk){
+  const t=(sg,fn,sh)=>M(coef(Q(sg*a))+fn+'('+z+sh+')'+pl(Q(d)));
+  const TR={T1:{h:t(-1,'sin',' − 3π'),e:`${M('sin(z − 3π) = sin(z − π) = −sin(z)')}. Das Minus vor dem Faktor hebt diese Spiegelung wieder auf.`},
+            T2:{h:t(1,'cos',' − '+fr('π','2')),e:`${M('cos(z − '+fr('π','2')+') = sin(z)')}: Der um ${M(fr('π','2'))} nach rechts verschobene Kosinus ist der Sinus.`},
+            T3:{h:t(-1,'sin',' + π'),e:`${M('sin(z + π) = −sin(z)')}: Eine halbe Periode Verschiebung wirkt wie eine Spiegelung. Das Minus vor dem Faktor hebt sie wieder auf.`},
+            T5:{h:t(-1,'cos',' + '+fr('π','2')),e:`${M('cos(z + '+fr('π','2')+') = −sin(z)')}. Das Minus vor dem Faktor hebt diese Spiegelung wieder auf.`}};
+  const FA={F1:{h:t(1,'cos',' + '+fr('π','2')),tag:'COS',why:'cos(z + π/2) mit sin(z) gleichgesetzt. Richtig ist cos(z − π/2) = sin(z)'},
+            F4:{h:t(-1,'cos',' − '+fr('π','2')),tag:'COS',why:'cos(z − π/2) ist schon sin(z). Das zusätzliche Minus davor spiegelt den Graphen'},
+            F2:{h:t(-1,'sin',' − 2π'),tag:'PHASE',why:'übersehen, dass −2π im Argument eine volle Periode ist und nichts ändert. Das Minus vor dem Faktor bleibt als Spiegelung'},
+            F6:{h:t(-1,'sin',' + 2π'),tag:'PHASE',why:'übersehen, dass +2π im Argument eine volle Periode ist und nichts ändert. Das Minus vor dem Faktor bleibt als Spiegelung'},
+            F3:{h:t(1,'sin',' + π'),tag:'PHASE',why:'übersehen, dass +π im Argument eine halbe Periode ist und den Graphen spiegelt'},
+            F5:{h:t(1,'sin',' − 3π'),tag:'PHASE',why:'übersehen, dass −3π wie −π wirkt, also wie eine Spiegelung'}};
+  return{t:'mc',q:`Welcher Term beschreibt denselben Graphen wie ${M('f(x) = '+coef(Q(a))+'sin('+z+')'+pl(Q(d)))}?`,
+   o:[{h:TR[tk].h,ok:1},...fk.map(k=>FA[k])],e:`Mit ${M('z = '+z)}: ${TR[tk].e}`};}
+
+function g11(a,b,c,sg,d){const r=sg<0?'rechts':'links',l=sg<0?'links':'rechts',s=Q(c/b),pm=sg<0?' − ':' + ';
+  const f=(B,ph)=>x=>a*S(B*x+ph*P)+d;
+  return{t:'gc',q:`Welcher Graph gehört zu ${M('f(x) = '+trig(a,b,sg*c,d))}?`,sp:{...(b<1?WW:WN),...Y4},
+   o:[{f:f(b,sg*c),l:`um ${M(piH(s))} nach ${r} verschoben`,ok:1},
+      {f:f(b,sg*b*c),l:`um ${M(piH(Q(c)))} nach ${r} verschoben`,tag:'PHASE',why:`b nicht ausgeklammert: Graph um ${piT(Q(c))} statt um ${piT(s)} verschoben`},
+      {f:f(b,-sg*c),l:`um ${M(piH(s))} nach ${l} verschoben`,tag:'PHASE',why:`Graph nach ${l} statt nach ${r} verschoben`},
+      {f:f(1/b,sg*c),l:`Periode ${M(piH(Q(2*b)))} statt ${M(piH(Q(2/b)))}`,tag:'PER',why:`Graph mit Periode ${piT(Q(2*b))} statt ${piT(Q(2/b))} gewählt`}],
+   e:`${M(trig(a,b,sg*c,Z)+' = '+coef(Q(a))+'sin('+H(Q(b))+'·(x'+pm+piH(s)+'))')}. Periode ${M(piH(Q(2/b)))}, Verschiebung um ${M(piH(s))} nach ${r}${d?`, Mittellage ${M('y = '+H(Q(d)))}`:''}.`};}
+
+const solH=s=>`${M('a = '+H(Q(s.a)))}, ${M('b = '+H(Q(s.b)))}, ${M('c = '+piH(R(s.k,8)))}, ${M('d = '+H(Q(s.d)))}`;
+const shT=q=>!q.n?'nicht verschoben':`um ${piT(ab(q))} nach ${q.n>0?'rechts':'links'} verschoben`;
+const shOf=s=>R(-s.k,2*Math.round(s.b*4));
+const base=s=>`Mittellage ${M('y = '+H(Q(s.d)))}, Amplitude ${M(H(Q(Math.abs(s.a))))}, Periode ${M(piH(R(8,Math.round(s.b*4))))}`;
+
+function sA(a,b,k,d){const sol={a,b,k,d},st=shOf(sol);
+  return{t:'sl',form:'std',term:M('f(x) = '+trig(a,b,R(k,8),d)),sp:{...(b<1?WWs:WNs),...Y4},f:x=>a*S(b*x+k*P/8)+d,sol,solTxt:solH(sol),
+   e:`${base(sol)}. ${b===1?'':`Erst b ausklammern: ${M('sin('+arg(Q(b))+pl(R(k,8),piH)+') = sin('+H(Q(b))+'·(x'+pl(R(k,Math.round(8*b)),piH)+'))')}. `}Der Graph ist ${shT(st)}${a<0?' und wegen des negativen a an der Mittellage gespiegelt':''}.`};}
+function sB(a,b,s,sg,d){const k=Math.round(sg*b*s*8),sol={a,b,k,d},S_=Q(s);
+  return{t:'sl',form:'fac',term:M('f(x) = '+coef(Q(a))+'sin('+H(Q(b))+'·(x'+(sg<0?' − ':' + ')+piH(S_)+'))'+pl(Q(d))),sp:{...(b<1?WWs:WNs),...Y4},f:x=>a*S(b*x+k*P/8)+d,sol,solTxt:solH(sol),
+   e:`${base(sol)}. Die Verschiebung steht schon ausgeklammert da: Der Graph ist um ${M(piH(S_))} nach ${sg<0?'rechts':'links'} verschoben${a<0?' und wegen des negativen a an der Mittellage gespiegelt':''}. Für den Regler gilt ${M('c = b·('+(sg<0?'−':'')+piH(S_)+') = '+piH(R(k,8)))}.`};}
+function sC(a,b,d){const sol={a,b,k:4,d};
+  return{t:'sl',form:'cos',term:M('f(x) = '+trig(a,b,Z,d,'cos')),sp:{...(b<1?WWs:WNs),...Y4},f:x=>a*C(b*x)+d,sol,solTxt:solH(sol)+` (oder ${M('a = '+H(Q(-a)))} mit ${M('c = −'+fr('π','2'))})`,
+   e:`${base(sol)}. Der Kosinus hat bei ${M('x = 0')} einen Extrempunkt, hier den ${a>0?'Hochpunkt':'Tiefpunkt'} ${M('(0 | '+H(Q(a+d))+')')}. Als Sinus geschrieben: ${M('cos(z) = sin(z + '+fr('π','2')+')')}.`};}
+
+const DEFS=[
+ {g:g1,p:[[-2,3],[-3,2],[-.5,4],[-2.5,3],[-4,5],[-1.5,6],[-2,.5],[-3,1/3],[-5,4],[-1/3,2]]},
+ {g:g2,p:[[1.5,3],[2,4],[.5,.5],[3,5],[4,2/3],[2,6],[2.5,.25],[3,1.5],[1,8],[2,.4]]},
+ {g:g3,p:[[-3,2,1],[2,3,-1],[-4,2,3],[3,4,2],[-2,5,-3],[5,2,-2],[-1,3,4],[4,3,-5],[-2,3,5],[3,2,-4]]},
+ {g:g4,p:[[2.5,1,-1],[3,1,1,'cos'],[2,2,-1,'cos'],[.5,1,1],[4,3,-1],[1.5,2,1,'cos'],[5,1,-1,'cos'],[2,3,1],[3,4,-1,'cos'],[3.5,1,1]]},
+ {g:g5,p:[[2,1,-1],[3,.5,1],[4,.25,-1],[2,2/3,1],[5,1/3,-1],[1.5,1,1],[3,.75,-1],[2,1/6,1],[2.5,.5,-1],[4,1.5,1]]},
+ {g:g6,p:[[1.5,2,-1],[2,2,1],[-2,2,-1],[1,2,2],[1.5,.5,1],[2,.5,-1],[-1,2,-2],[2.5,2,1],[-1.5,.5,-1],[1,.5,-2]]},
+ {g:sA,p:[[2,1,4,1],[1.5,2,-4,-1],[-2,1,-4,.5],[1,2,4,2],[2.5,.5,2,-1],[-1.5,1,2,1],[2,.5,-4,1],[3,1,-2,-.5],[.5,2,4,1.5],[-2,.5,4,1]]},
+ {g:g8,p:[[5,2,1,-1],[3,2,.5,1],[2,3,1,-1],[4,2,3,1],[2,4,1,1],[3,3,.5,-1],[1,2,2/3,-1],[5,4,2,-1],[2,3,1.5,1],[3,2,1/3,1]]},
+ {g:g9,p:[[1.5,2],[2,2],[1,4],[2.5,2],[2,.5],[3,.5],[.5,2],[3,4],[1.5,.5],[2,4]]},
+ {g:g12,p:[[2,.5,1],[1.5,2,1],[2,2,-1],[1,.5,2],[1.5,.5,-1],[2,2,1],[1,2,-2],[2.5,.5,1],[1,2,2],[1.5,2,-2]]},
+ {g:sB,p:[[1.5,2,.25,-1,1],[2,2,.25,1,-1],[1,2,.5,-1,1.5],[2,.5,.5,1,1],[-1.5,2,.25,1,.5],[2.5,.5,1,-1,-1],[1.5,3,.25,-1,-1],[-2,.5,1,1,1],[1.5,.5,1.5,-1,1],[3,2,.25,-1,-1]]},
+ {g:g11,p:[[2,2,.5,-1,0],[2,2,.5,1,0],[1.5,2,.5,-1,1],[2,3,.75,-1,0],[1,2,.5,1,1],[2,.5,.25,-1,0],[-2,2,.5,-1,0],[1.5,.5,.5,1,0],[2,2,1.5,-1,0],[2.5,2,.5,1,-1]]},
+ {g:g13,p:[[-1,1],[1,1],[-2,1],[2,.5],[-1.5,2],[1.5,1],[-1,.5],[2,2],[-2.5,1],[1,2]]},
+ {g:g14,p:[[2,'π·x',1,'T1',['F1','F2','F3']],[3,'2x',-1,'T2',['F4','F3','F6']],[2,'x',2,'T3',['F1','F5','F2']],[1.5,'2x',1,'T5',['F4','F2','F5']],[4,'x',-2,'T1',['F4','F6','F3']],
+     [2,'3x',1,'T2',['F1','F5','F6']],[5,'π·x',-1,'T3',['F4','F2','F5']],[3,'x',2,'T5',['F1','F3','F6']],[2,'2π·x',3,'T1',['F1','F5','F6']],[.5,'x',1,'T2',['F4','F3','F2']]]},
+ {g:sC,p:[[-2,.5,-.5],[2,1,1],[1.5,2,-1],[-1,2,1.5],[3,.5,0],[-2.5,1,1],[2,2,.5],[-1.5,.5,1],[1,1,-2],[-3,2,1]]}
+];
+
+function shuffle(a){a=a.slice();for(let j=a.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[a[j],a[k]]=[a[k],a[j]];}return a;}
+function positions(n){for(;;){const s=shuffle(Array.from({length:n},(_,j)=>j%4));if(s.every((v,j)=>!j||v!==s[j-1]))return s;}}
+function build(){const pos=positions(DEFS.filter(d=>![sA,sB,sC].includes(d.g)).length);let m=0;
+  return DEFS.map(d=>{const q=d.g(...d.p[Math.floor(Math.random()*d.p.length)]);
+    if(q.t!=='sl'){const w=shuffle(q.o.filter(o=>!o.ok));w.splice(pos[m++],0,q.o.find(o=>o.ok));q._o=w;}return q;});}
+
+function diag(q,u){const s=q.sol,e=[],ne=(x,y)=>Math.abs(x-y)>1e-9;
+  if(ne(u.b,s.b))e.push({tag:'PER',why:`Periodenlänge deines Graphen ${piT(R(8,Math.round(u.b*4)))} statt ${piT(R(8,Math.round(s.b*4)))}`});
+  if(ne(u.d,s.d))e.push({tag:'VERT',why:`Mittellage deines Graphen bei y = ${T(Q(u.d))} statt bei y = ${T(Q(s.d))}`});
+  if(ne(Math.abs(u.a),Math.abs(s.a)))e.push({tag:'AMP',why:`Amplitude deines Graphen ${T(Q(Math.abs(u.a)))} statt ${T(Q(Math.abs(s.a)))}`});
+  if(e.length)return e;
+  if(q.form==='cos'){
+    if(u.k===0)return[{tag:'COS',why:'Sinus statt Kosinus eingestellt: Bei x = 0 muss ein Extrempunkt liegen, dein Graph geht dort durch die Mittellage'}];
+    if((u.k===4&&u.a===-s.a)||(u.k===-4&&u.a===s.a))return[{tag:'REFL',why:`Graph gespiegelt: Bei x = 0 muss ein ${s.a>0?'Hochpunkt':'Tiefpunkt'} liegen`}];
+    return[{tag:'COS',why:'Extrempunkt liegt nicht bei x = 0. Der Kosinus ist ein um π/2 nach links verschobener Sinus'}];
+  }
+  if(Math.sign(u.a)!==Math.sign(s.a))return[u.k===s.k?{tag:'REFL',why:'Graph an der Mittellage gespiegelt (Vorzeichen von a falsch)'}:{tag:'PHASE',why:'Verschiebung in x-Richtung und Spiegelung passen nicht zusammen'}];
+  const su=shOf(u),st=shOf(s);
+  if(st.n&&su.n===-st.n&&su.d===st.d)return[{tag:'PHASE',why:`Verschiebungsrichtung vertauscht: Graph ${shT(su)} statt ${shT(st)}`}];
+  if(q.form==='std'&&s.b!==1&&!ne(su.v,-s.k/8))return[{tag:'PHASE',why:`b nicht ausgeklammert: Graph ${shT(su)}, richtig ist ${shT(st)}`}];
+  return[{tag:'PHASE',why:`Graph ${shT(su)}, richtig ist ${shT(st)}`}];
+}
+
+/* ---------- Oberfläche ---------- */
+if(typeof document!=='undefined'){
+const $=s=>document.querySelector(s);
+let QS=[],i=0,ans=[],draws=[];
+
+function plot(cv,sp){
+  const cs=getComputedStyle(document.documentElement),tk=n=>cs.getPropertyValue(n).trim();
+  const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
+  const r=window.devicePixelRatio||1;cv.width=Math.round(w*r);cv.height=Math.round(h*r);
+  const c=cv.getContext('2d');c.setTransform(r,0,0,r,0,0);
+  const bg=tk('--soft'),ax=tk('--axis');c.fillStyle=bg;c.fillRect(0,0,w,h);
+  const [x0,x1]=sp.x,[y0,y1]=sp.y,m=10,xt=sp.pi?P*sp.n/sp.d:sp.xt,yt=sp.yt,xl=sp.xl||1;
+  const X=x=>m+(x-x0)/(x1-x0)*(w-2*m),Y=y=>h-m-(y-y0)/(y1-y0)*(h-2*m);
+  const kx=[Math.ceil(x0/xt-1e-9),Math.floor(x1/xt+1e-9)],ky=[Math.ceil(y0/yt-1e-9),Math.floor(y1/yt+1e-9)];
+  c.strokeStyle=tk('--grid');c.lineWidth=1;c.beginPath();
+  for(let k=kx[0];k<=kx[1];k++){const p=Math.round(X(k*xt))+.5;c.moveTo(p,0);c.lineTo(p,h);}
+  for(let k=ky[0];k<=ky[1];k++){const p=Math.round(Y(k*yt))+.5;c.moveTo(0,p);c.lineTo(w,p);}
+  c.stroke();
+  const ox=Math.round(X(0))+.5,oy=Math.round(Y(0))+.5;
+  c.strokeStyle=c.fillStyle=ax;c.lineWidth=1.2;c.beginPath();c.moveTo(0,oy);c.lineTo(w-2,oy);c.moveTo(ox,h);c.lineTo(ox,2);c.stroke();
+  c.beginPath();c.moveTo(w,oy);c.lineTo(w-8,oy-4);c.lineTo(w-8,oy+4);c.closePath();c.fill();
+  c.beginPath();c.moveTo(ox,0);c.lineTo(ox-4,8);c.lineTo(ox+4,8);c.closePath();c.fill();
+  c.beginPath();
+  for(let k=kx[0];k<=kx[1];k++){if(!k||k%xl)continue;const p=Math.round(X(k*xt))+.5;c.moveTo(p,oy-3);c.lineTo(p,oy+3);}
+  for(let k=ky[0];k<=ky[1];k++){if(!k)continue;const p=Math.round(Y(k*yt))+.5;c.moveTo(ox-3,p);c.lineTo(ox+3,p);}
+  c.stroke();
+  c.lineJoin='round';
+  (sp.fns||[]).forEach(F=>{c.strokeStyle=tk(F.col||'--curve');c.lineWidth=F.w||2.5;c.setLineDash(F.dash||[]);c.beginPath();
+    const N=480;for(let s=0;s<=N;s++){const x=x0+(x1-x0)*s/N,px=X(x),py=Y(F.f(x));s?c.lineTo(px,py):c.moveTo(px,py);}c.stroke();});
+  c.setLineDash([]);
+  c.font='12px Inter,system-ui,sans-serif';
+  const lab=(t,x,y,al,bl)=>{c.textAlign=al;c.textBaseline=bl;c.lineWidth=3.5;c.strokeStyle=bg;c.strokeText(t,x,y);c.fillStyle=ax;c.fillText(t,x,y);};
+  for(let k=kx[0];k<=kx[1];k++){if(!k||k%xl)continue;const px=X(k*xt);if(px<14||px>w-16)continue;lab(sp.pi?piT(R(k*sp.n,sp.d)):de(k*xt),px,oy+6,'center','top');}
+  for(let k=ky[0];k<=ky[1];k++){if(!k)continue;const py=Y(k*yt);if(py<12||py>h-8)continue;lab(de(k*yt),ox-7,py,'right','middle');}
+  lab('x',w-6,oy-7,'right','bottom');lab('y',ox+8,4,'left','top');
+}
+const redraw=()=>draws.forEach(f=>f());
+addEventListener('resize',redraw);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',redraw);
+new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(redraw);
+
+function seg(){$('#seg').innerHTML=QS.map((_,j)=>`<li class="${ans[j]?(ans[j].ok?'ok':'bad'):(j===i?'cur':'')}"></li>`).join('');}
+const level=j=>j<5?'Grundlagen':j<10?'Mittel':'Anspruchsvoll';
+
+function start(){
+  draws=[];$('#seg').hidden=true;
+  $('#main').innerHTML=`<h2>So läuft das Quiz ab</h2>
+  <p>Du übst für den Kurztest: Amplitude, Periodenlänge, Verschiebungen und Spiegelungen an ${M('f(x) = a·sin(b·x + c) + d')} erkennen, Terme aus Graphen ablesen und Graphen einstellen.</p>
+  <ul class="steps">
+   <li><strong>15 Aufgaben in drei Stufen.</strong> Sie beginnen mit den Grundlagen und werden schwerer.</li>
+   <li><strong>Auswahlaufgaben.</strong> Von vier Antworten ist genau eine richtig. Bei zwei Aufgaben wählst du unter vier Graphen.</li>
+   <li><strong>Drei Regler-Aufgaben.</strong> Du bekommst einen Funktionsterm und stellst den Graphen mit den vier Reglern ${M('a')}, ${M('b')}, ${M('c')} und ${M('d')} ein. Zahlenwerte der Regler siehst du nicht, du arbeitest nur mit dem Graphen. Du hast einen Versuch. Liegt dein Graph nah genug am richtigen, zählt die Aufgabe.</li>
+   <li><strong>Rückmeldung sofort.</strong> Nach jeder Antwort siehst du die Lösung und bei einem Fehler, wo er lag.</li>
+   <li><strong>Auswertung am Ende.</strong> Du erfährst, welche Themen du noch üben musst, und bekommst einen fertigen Text, mit dem dir eine KI passende Zusatzaufgaben stellt.</li>
+   <li><strong>Jeder Durchgang ist anders.</strong> Zu jeder Aufgabe gibt es zehn Versionen, eine davon wird zufällig gezogen.</li>
+  </ul>
+  <p class="muted">Leg Papier, Stift und Taschenrechner bereit. Gerechnet wird im Bogenmaß.</p>
+  <button class="btn" id="go">Quiz starten</button>`;
+  $('#go').onclick=run;
+}
+function run(){QS=build();i=0;ans=[];$('#seg').hidden=false;render();scrollTo({top:0});}
+
+function render(){
+  const q=QS[i];draws=[];seg();
+  let h=`<div class="eyebrow">Aufgabe ${i+1} von ${QS.length} · ${level(i)}</div>`;
+  if(q.t==='sl'){
+    h+=`<p class="q">Stelle mit den Reglern den Graphen von ${M('f')} ein. Du hast einen Versuch.</p>
+    <div class="term">${q.term}</div><canvas id="cv"></canvas>
+    <div class="sls">
+    <div class="sl"><label for="sa">a</label><input type="range" id="sa" min="-3" max="3" step="0.25" value="1"></div>
+    <div class="sl"><label for="sb">b</label><input type="range" id="sb" min="0.25" max="4" step="0.25" value="1"></div>
+    <div class="sl"><label for="sc">c</label><input type="range" id="sc" min="-8" max="8" step="1" value="0"></div>
+    <div class="sl"><label for="sd">d</label><input type="range" id="sd" min="-3" max="3" step="0.25" value="0"></div>
+    </div><button class="btn" id="chk">Prüfen</button>`;
+  }else{
+    h+=`<p class="q">${q.q}</p>`;
+    if(q.t==='mc'&&q.sp)h+=`<canvas id="cv"></canvas>`;
+    h+=`<div class="opts ${q.t==='gc'?'g':''}">`+q._o.map((o,k)=>`<button class="opt" data-k="${k}"><span class="k">${'ABCD'[k]}</span>${q.t==='gc'?`<canvas></canvas><span class="cap" hidden>${o.l}</span>`:`<span>${o.h}</span>`}</button>`).join('')+`</div>`;
+  }
+  h+=`<div id="fb"></div><button class="btn" id="next" hidden>${i===QS.length-1?'Zur Auswertung':'Weiter'}</button>`;
+  $('#main').innerHTML=h;
+  if(q.t==='sl')initSlider(q);
+  else{
+    if(q.t==='mc'&&q.sp){const cv=$('#cv');draws.push(()=>plot(cv,q.sp));}
+    document.querySelectorAll('.opt').forEach(b=>{
+      if(q.t==='gc'){const cv=b.querySelector('canvas'),o=q._o[+b.dataset.k];draws.push(()=>plot(cv,{...q.sp,fns:[{f:o.f}]}));}
+      b.onclick=()=>answer(+b.dataset.k);});
+  }
+  $('#next').onclick=()=>{i++;i<QS.length?render():finish();scrollTo({top:0});};
+  requestAnimationFrame(redraw);
+}
+
+function feedback(ok,errs,e,extra){
+  $('#fb').innerHTML=`<div class="fb ${ok?'ok':'bad'}"><div><strong class="${ok?'ok':'bad'}">${ok?'Richtig.':'Falsch.'}</strong>${extra?' '+extra:''}</div>${errs.map(x=>`<div>Dein Fehler: ${x.why}.</div>`).join('')}<div>${e}</div></div>`;
+  ans[i]={ok,errs};seg();const n=$('#next');n.hidden=false;n.focus({preventScroll:true});
+  $('#fb').scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function answer(k){
+  const q=QS[i],o=q._o[k];
+  document.querySelectorAll('.opt').forEach(b=>{const x=q._o[+b.dataset.k];b.disabled=true;if(x.ok)b.classList.add('right');else if(+b.dataset.k===k)b.classList.add('wrong');const c=b.querySelector('.cap');if(c)c.hidden=false;});
+  feedback(!!o.ok,o.ok?[]:[{tag:o.tag,why:o.why}],q.e);
+}
+function initSlider(q){
+  const cv=$('#cv'),ids=['sa','sb','sc','sd'];let done=false;
+  const get=()=>({a:+$('#sa').value,b:+$('#sb').value,k:+$('#sc').value,d:+$('#sd').value});
+  const g=u=>x=>u.a*S(u.b*x+u.k*P/8)+u.d;
+  const draw=()=>{const u=get();plot(cv,{...q.sp,fns:done?[{f:q.f,col:'--curve2'},{f:g(u),col:'--curve',dash:[6,5]}]:[{f:g(u),col:'--curve'}]});};
+  draws.push(draw);ids.forEach(id=>$('#'+id).oninput=draw);
+  $('#chk').onclick=()=>{
+    const u=get(),gu=g(u);let md=0;const [x0,x1]=q.sp.x;
+    for(let s=0;s<=400;s++){const x=x0+(x1-x0)*s/400;md=Math.max(md,Math.abs(gu(x)-q.f(x)));}
+    const ok=md<=.3,errs=ok?[]:diag(q,u);
+    done=true;ids.forEach(id=>$('#'+id).disabled=true);$('#chk').hidden=true;draw();
+    feedback(ok,errs,`${ok?'':`<strong>Hinweis:</strong> Gehe in folgender Reihenfolge vor: erst ${M('b')}, dann ${M('a')}, dann ${M('d')}, als Letztes ${M('c')}.</div><div>`}${q.e} Im Bild: Graph von ${M('f')} orange, dein Graph blau gestrichelt. Passende Reglerwerte: ${q.solTxt}.`,ok&&md>1e-6?'Dein Graph liegt nah genug, aber nicht exakt auf dem Graphen von f.':'');
+  };
+  draw();
+}
+
+function finish(){
+  draws=[];seg();
+  const score=ans.filter(a=>a.ok).length,by={};
+  ans.forEach((a,j)=>a.errs.forEach(e=>{(by[e.tag]=by[e.tag]||[]).push({j,why:e.why});}));
+  const tags=Object.keys(by).sort((x,y)=>by[y].length-by[x].length);
+  let h=`<div class="eyebrow">Auswertung</div><div class="score">${score} / ${QS.length}</div>`;
+  if(!tags.length)h+=`<p>Alle Aufgaben richtig. Für den Kurztest musst du dieses Thema nicht weiter üben. Wenn du trotzdem mehr willst, liefert dir der Text unten schwierigere Aufgaben.</p>`;
+  else{
+    h+=`<p>${score>=12?'Die Grundlagen sitzen. Es bleiben einzelne Lücken:':score>=8?'Ein Teil sitzt. Bei diesen Themen hast du Punkte verloren:':'Hier fehlt noch einiges. Arbeite die Themen in dieser Reihenfolge durch:'}</p>`;
+    tags.forEach(t=>{h+=`<div class="topic"><h3>${TOPICS[t].name} <span class="cnt">· ${by[t].length} Fehler</span></h3><p>${TOPICS[t].rule}</p><ul>${by[t].map(e=>`<li>Aufgabe ${e.j+1}: ${e.why}.</li>`).join('')}</ul></div>`;});
+  }
+  h+=`<div class="box"><h3>Weiterüben mit einer KI</h3><p class="muted">Kopiere diesen Text in eine KI deiner Wahl (zum Beispiel Claude, ChatGPT, Gemini oder Copilot). ${tags.length?'Er enthält deine Fehler aus diesem Durchgang, damit du gezielt dazu Aufgaben bekommst.':''}</p>
+  <textarea id="prompt" readonly></textarea><div class="row"><button class="btn" id="copy">Text kopieren</button><button class="btn sec" id="again">Neuer Durchgang</button><span class="note" id="cmsg" role="status"></span></div></div>`;
+  $('#main').innerHTML=h;
+  const RL=['Stelle immer nur eine Aufgabe und warte auf meine Antwort.',
+   'Beginne mit einer einfachen Aufgabe und steigere die Schwierigkeit, sobald ich zwei Aufgaben hintereinander richtig habe.',
+   'Wenn meine Antwort falsch ist, verrate die Lösung nicht sofort. Benenne meinen Denkfehler, gib mir einen Hinweis und lass mich noch einmal antworten.',
+   'Mische die Aufgabentypen: Amplitude, Periodenlänge, Verschiebungen und Wertemenge aus dem Term bestimmen; die fünf charakteristischen Punkte einer Periode für eine Skizze berechnen; einen Funktionsterm aus einer Graphenbeschreibung (Hochpunkt, Tiefpunkt, Periode) aufstellen.',
+   'Schreibe Brüche und Vielfache von π exakt (zum Beispiel 3π/2), nicht als Dezimalzahl.',
+   'Gib mir nach acht Aufgaben eine kurze Rückmeldung, was ich sicher kann und was ich noch üben muss.'];
+  let p='Ich bin in der 12. Klasse einer Berufsoberschule in Bayern (Ausbildungsrichtung Technik, Mathematik Additum) und schreibe bald einen Kurztest zur allgemeinen Sinusfunktion f(x) = a·sin(b·x + c) + d, auch in der Kosinus-Form. Gerechnet wird im Bogenmaß.\n\n';
+  if(tags.length){
+    p+=`In einem Übungsquiz hatte ich ${score} von ${QS.length} Aufgaben richtig. Diese Fehler habe ich gemacht:\n`;
+    tags.forEach(t=>{p+=`- ${TOPICS[t].name}: ${by[t].map(e=>e.why).join('; ')}\n`;});
+    p+='\nÜbe mit mir gezielt genau diese Themen. Das Thema mit den meisten Fehlern steht oben und soll am häufigsten vorkommen. Halte dich an diese Regeln:\n';
+  }else{
+    p+=`In einem Übungsquiz hatte ich alle ${QS.length} Aufgaben richtig. Stelle mir anspruchsvollere Aufgaben zum selben Thema, zum Beispiel: Funktionsterm aus Hoch- und Tiefpunkt bestimmen, zwei verschiedene Terme für denselben Graphen finden, zwischen Sinus- und Kosinus-Form umrechnen, Anwendungsaufgaben (Schwingung, Wechselspannung, Gezeiten). Halte dich an diese Regeln:\n`;
+  }
+  p+=RL.map((r,k)=>`${k+1}. ${r}`).join('\n')+'\n\nBeginne jetzt mit der ersten Aufgabe.';
+  const ta=$('#prompt');ta.value=p;
+  $('#copy').onclick=()=>{const fb=()=>{ta.focus();ta.select();$('#cmsg').textContent='Der Text ist markiert. Kopiere ihn mit Strg+C.';};
+    try{navigator.clipboard.writeText(p).then(()=>{$('#cmsg').textContent='Kopiert.';},fb);}catch(e){fb();}};
+  $('#again').onclick=run;
+}
+start();
+}
+</script>
+
+</body>
+</html>
