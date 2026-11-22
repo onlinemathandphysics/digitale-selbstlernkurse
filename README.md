@@ -1,6 +1,6 @@
 # Digitale Selbstlernkurse
 
-Interaktive Selbstlernkurse und Übungen für **Mathematik** und **Physik** an der Fachoberschule und Berufsoberschule (FOS/BOS) in Bayern.
+Interaktive Selbstlernkurse und Übungen für **Mathematik**, **Physik** und **Naturwissenschaften** an der Fachoberschule und Berufsoberschule (FOS/BOS) in Bayern.
 
 Die Kurse laufen direkt im Browser, auf dem Computer, dem Tablet und dem Handy. Sie brauchen keine Installation und keine Anmeldung. Der Lernfortschritt bleibt nur im Browser des jeweiligen Geräts gespeichert. Es werden keine Daten an einen Server übertragen.
 
@@ -18,6 +18,10 @@ Die Kurse laufen direkt im Browser, auf dem Computer, dem Tablet und dem Handy. 
 | LB 2 – Trigonometrie | Selbstlernkurs: Goniometrische Gleichungen | `goniometrische-gleichungen.html` |
 
 ### Physik
+
+In Vorbereitung.
+
+### Naturwissenschaften
 
 In Vorbereitung.
 
