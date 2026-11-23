@@ -23,7 +23,11 @@ In Vorbereitung.
 
 ### Naturwissenschaften
 
-In Vorbereitung.
+**Naturwissenschaften FOS|BOS 12 Nichttechnik** (Ordner `naturwissenschaften/fosbos-12-nichttechnik/`)
+
+| Lernbereich | Angebot | Datei |
+|---|---|---|
+| LB 1 – Kräfte und ihre Wirkungen | Selbstlernkurs: Kräfte und ihre Wirkungen | `kraefte-und-ihre-wirkungen.html` |
 
 ## Aufbau des Repositorys
 
@@ -35,6 +39,10 @@ mathematik/
     index.html                      Übersicht Additum 12T
     goniometrische-gleichungen.html
     quiz-allgemeine-sinusfunktion.html
+naturwissenschaften/
+  fosbos-12-nichttechnik/
+    index.html                      Übersicht Naturwissenschaften 12 Nichttechnik
+    kraefte-und-ihre-wirkungen.html
 ```
 
 Jede Kursdatei ist in sich abgeschlossen: Schriften, Formelsatz und Grafiken sind eingebettet. Die Kurse funktionieren deshalb auch offline, wenn man die HTML-Datei herunterlädt und im Browser öffnet.
