@@ -303,7 +303,7 @@ ol[type="a"]{list-style:none;counter-reset:abc;padding-left:1.9em}ol[type="a"]>l
     <div class="brand"><div class="brand-logo"><svg viewBox="0 0 42 42" width="42" height="42" aria-label="F mit Vektorpfeil"><text x="20" y="32" text-anchor="middle" font-family="Georgia,Times New Roman,serif" font-style="italic" font-weight="800" font-size="23" fill="#fff">F</text><path d="M14 9.5h14.5M25.5 6.5l3.5 3-3.5 3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h1>Kräfte und ihre Wirkungen</h1><small>Selbstlernkurs · Naturwissenschaften 12</small></div></div>
     <div class="progress"><div class="progress-bar"><span id="pbar"></span></div><small id="ptxt"></small><div class="side-btns"><button id="sb-save">💾 Speichern</button><button id="sb-load">📂 Laden</button><button id="sb-proto">📄 Protokoll</button><button id="sb-reset">🗑️ Zurücksetzen</button></div></div>
     <nav id="nav" aria-label="Abschnitte"></nav>
-    <div class="side-note">Lernbereich 1 · Physikalische Grundlagen. Dein Fortschritt wird in diesem Browser gespeichert.</div>
+    <div class="side-note">Lernbereich 1 · Physikalische Grundlagen. Dein Fortschritt wird in diesem Browser gespeichert.<br><a href="../../impressum.html" target="_blank" rel="noopener" style="color:inherit">Impressum und Datenschutz</a></div>
   </aside>
   <div class="overlay" id="ovl"></div>
   <div class="content"><div class="wrap">
@@ -1835,9 +1835,9 @@ const exkurs=()=>`<h3>Exkurs: Wie kommt man eigentlich vorwärts?</h3>
  <p>Das 3. Newtonsche Gesetz steckt in fast jeder Fortbewegung: Man übt auf etwas anderes eine Kraft nach hinten aus. Die Gegenkraft schiebt einen selbst nach vorn. Wähle aus, wovon man sich abstößt.</p>
  ${wid('fortbew','Fortbewegung an Land, im Wasser, in der Luft und im Weltraum')}
  ${quiz('ex8')}`;
-const LINK_ISS2=`<a class="extlink" href="https://www.youtube.com/watch?v=sPZ2bjW53c8" target="_blank" rel="noopener">▶ Video bei YouTube ansehen (öffnet in neuem Tab)</a>`,LINK_ISS3=`<a class="extlink" href="https://www.youtube.com/watch?v=ZkVU-bj9bDk" target="_blank" rel="noopener">▶ Video bei YouTube ansehen (öffnet in neuem Tab)</a>`,ENG=`<span class="small muted">Das Video ist auf Englisch. Deutsche Untertitel, falls angeboten: ⚙ (Einstellungen) → „Untertitel“ → „Automatisch übersetzen“ → „Deutsch“.</span>`;
-const LINK_ROCKET=`<a class="extlink" href="https://www.youtube.com/watch?v=wS_8WOQJUu8&amp;t=31s" target="_blank" rel="noopener">▶ Raketenstart bei YouTube ansehen (startet bei 0:31, öffnet in neuem Tab)</a>`;
-const LINK_VIDEO=`<a class="extlink" href="https://www.youtube.com/watch?v=uuDuv1iY7EE&amp;t=380s" target="_blank" rel="noopener">▶ Video bei YouTube ansehen (startet bei 6:20, öffnet in neuem Tab)</a><br><span class="small muted">Spricht eine deutsche Computerstimme? Dann im Video auf ⚙ (Einstellungen) → „Audiotrack“ → „Englisch (Original)“ tippen. Über den Link selbst lässt sich die Tonspur leider nicht festlegen.</span>`;
+const LINK_ISS2=`<a class="extlink" href="https://www.youtube.com/watch?v=sPZ2bjW53c8" target="_blank" rel="noopener noreferrer">▶ Video auf YouTube (öffnet neuen Tab)</a>`,LINK_ISS3=`<a class="extlink" href="https://www.youtube.com/watch?v=ZkVU-bj9bDk" target="_blank" rel="noopener noreferrer">▶ Video auf YouTube (öffnet neuen Tab)</a>`,ENG=`<span class="small muted">Das Video ist auf Englisch. Deutsche Untertitel, falls angeboten: ⚙ (Einstellungen) → „Untertitel“ → „Automatisch übersetzen“ → „Deutsch“.</span>`;
+const LINK_ROCKET=`<a class="extlink" href="https://www.youtube.com/watch?v=wS_8WOQJUu8&amp;t=31s" target="_blank" rel="noopener noreferrer">▶ Video auf YouTube, ab 0:31 (öffnet neuen Tab)</a>`;
+const LINK_VIDEO=`<a class="extlink" href="https://www.youtube.com/watch?v=uuDuv1iY7EE&amp;t=380s" target="_blank" rel="noopener noreferrer">▶ Video auf YouTube, ab 6:20 (öffnet neuen Tab)</a><br><span class="small muted">Spricht eine deutsche Computerstimme? Dann im Video auf ⚙ (Einstellungen) → „Audiotrack“ → „Englisch (Original)“ tippen. Über den Link selbst lässt sich die Tonspur leider nicht festlegen.</span>`;
 
 const SECS=[
 {t:'Start &amp; Überblick',h:()=>`
