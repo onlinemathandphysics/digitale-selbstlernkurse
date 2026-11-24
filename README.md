@@ -34,6 +34,8 @@ In Vorbereitung.
 ```
 index.html                          Startseite
 impressum.html                      Impressum und Datenschutz
+favicon.svg, favicon.ico            Symbol im Browser-Tab
+apple-touch-icon.png                Symbol auf dem Homescreen (iPhone, iPad)
 mathematik/
   additum-fosbos-12t/
     index.html                      Übersicht Additum 12T
