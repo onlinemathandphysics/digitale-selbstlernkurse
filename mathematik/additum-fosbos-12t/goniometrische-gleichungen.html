@@ -124,6 +124,7 @@ textarea{width:100%;min-height:80px;font:13px/1.4 Consolas,ui-monospace,Menlo,mo
 .side-btns{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
 .side-btns button{flex:1 1 auto;border:1px solid #2a3a5f;background:#1c2b4d;color:#dfe5f3;border-radius:8px;padding:6px 8px;font:inherit;font-size:13px;cursor:pointer}
 .side-btns button:hover{background:#273a63}
+.sc .rad{display:inline-block;margin-top:3px;font-size:12.5px;font-weight:600;color:#b4520a;background:var(--orange-l);border-radius:6px;padding:0 7px}
 .sb-imp{display:block;margin-top:10px;font-size:12px;color:#9fb0d4;text-decoration:none}.sb-imp:hover{color:#dfe5f3;text-decoration:underline}
 .blitz{color:var(--red);font-weight:800;font-size:1.25em;margin:0 .25em;vertical-align:-.05em}
 .tip{background:var(--amber-l);border-radius:10px;padding:10px 14px;font-size:15px}
@@ -284,7 +285,7 @@ fit:{title:'Fit-Check',qs:[
   e:`${M('x = sin⁻¹(0,8) ≈ 0,927')}. Die Umkehrfunktion ${M('sin⁻¹')} macht aus dem Sinuswert wieder das Argument. In der Analysis rechnen wir im Bogenmaß (RAD).`},
  {t:'set',q:`Löse die Gleichung ${M('3x² + 2x = 0')}.`,A:[0,-2/3],c:x=>3*x*x+2*x,iv:[-5,5],hint:'Trenne die Lösungen mit Strichpunkt. Brüche wie 3/4 sind erlaubt.',w:'Tipp: x ausklammern.',
   e:`${M('x·(3x + 2) = 0')}. Ein Produkt ist null, wenn ein Faktor null ist: ${M('x_1 = 0')} und ${M('x_2 = −'+fr(2,3))}.`},
- {t:'set',q:`Löse die Gleichung ${M('z² − 1,5z − 1 = 0')}.`,A:[2,-.5],c:z=>z*z-1.5*z-1,iv:[-5,5],hint:'Trenne die Lösungen mit Strichpunkt.',w:'Tipp: Lösungsformel (Mitternachtsformel).',
+ {t:'set',l:'z =',q:`Löse die Gleichung ${M('z² − 1,5z − 1 = 0')}.`,A:[2,-.5],c:z=>z*z-1.5*z-1,iv:[-5,5],hint:'Trenne die Lösungen mit Strichpunkt.',w:'Tipp: Lösungsformel (Mitternachtsformel).',
   e:`${M('z_1,2 = '+fr('1,5 ± '+rt('1,5² + 4'),2)+' = '+fr('1,5 ± 2,5',2))}, also ${M('z_1 = 2')} und ${M('z_2 = −0,5')}.`},
  {t:'mc',q:'Eine Schwingung startet zum Zeitpunkt 0 im tiefsten Punkt. Welche Grundform passt?',a:3,o:[[M('sin(x)'),'Der Sinus startet in der Mittellage und geht nach oben.'],[M('−sin(x)'),'Der gespiegelte Sinus startet in der Mittellage und geht nach unten.'],[M('cos(x)'),'Der Kosinus startet im höchsten Punkt.'],[M('−cos(x)'),'']],
   e:`${M('−cos(0) = −1')}: Der gespiegelte Kosinus startet im tiefsten Punkt.`}]},
@@ -468,8 +469,9 @@ const CHK=['erklären, was eine goniometrische Gleichung ist, und aus einer Schw
 
 /* ---------- Bausteine für Text ---------- */
 const box=(cls,t,h)=>`<div class="box ${cls}"><div class="bt">${t}</div>${h}</div>`;
+const RADre=/(^|\|\s*|mit\s)(sin|cos|tan)⁻¹/,radRows=rows=>rows.map((r,i)=>{const p=rows[i-1]||['',''],c=r[1]||'',a=RADre.test(c)||(/⁻¹/.test(r[0])&&!RADre.test(p[1]||'')&&!/⁻¹/.test(p[0])&&!/⁻¹/.test(p[1]||''))||r[6]==='rad';return a&&!/RAD/.test(c)?Object.assign(r.slice(),{1:c+(c?'<br>':'')+'<span class="rad">Taschenrechner auf RAD</span>'}):r;});
 const stRow=(r,hid)=>{const bl=r[0].endsWith(' ↯'),m=bl?r[0].slice(0,-2):r[0];return `<div class="st${r[2]?' '+r[2]:''}"${hid?' hidden':''}><div class="sm">${r[3]?`<span class="tag">${r[3]}</span>`:''}${m.split(' &nbsp; und &nbsp; ').map(M).join(' <span class="und">und</span> ')}${bl?BL:''}</div><div class="sc">${r[1]||''}</div></div>`};
-const steps=rows=>`<div class="steps">${rows.map((r,i)=>stRow(r,i>0)).join('')}<button class="btn sec sm" data-step>nächster Schritt</button></div>`;
+const steps=rows=>`<div class="steps">${radRows(rows).map((r,i)=>stRow(r,i>0)).join('')}<button class="btn sec sm" data-step>nächster Schritt</button></div>`;
 const wid=(n,t,c)=>`<div class="widget" data-w="${n}"${c?` data-c="${c}"`:''}><div class="wt">${t}</div></div>`;
 const need=(k,h)=>h;
 const isT=id=>id==='fit'||/^k\d/.test(id);
@@ -677,7 +679,7 @@ const SECS=[
  <p>Kommt der Tangens zusammen mit Sinus oder Kosinus vor, ersetzt man ihn durch ${M(fr('sin(x)','cos(x)'))}.</p>
  <h4>Beispiel 3: Tangens ersetzen</h4>
  <p>Gesucht sind die Lösungen von ${M('3·tan(x) + 2·cos(x) = 0')} für ${M('x ∈ [0; 2π]')}.</p>
- ${steps([['3·tan(x) + 2·cos(x) = 0','Der Tangens wird ersetzt: tan(x) = sin(x)/cos(x).'],['3·'+fr('sin(x)','cos(x)')+' + 2·cos(x) = 0','| · cos(x) &nbsp; Der Nenner fällt weg.'],['3·sin(x) + 2·cos²(x) = 0','cos²(x) = 1 − sin²(x) einsetzen'],['3·sin(x) + 2 − 2·sin²(x) = 0','ordnen'],['−2·sin²(x) + 3·sin(x) + 2 = 0','| · (−1)'],['2·sin²(x) − 3·sin(x) − 2 = 0','Jetzt kommt nur noch der Sinus vor.'],['z = sin(x)','','sub','Substitution'],['2'+Z+'² − 3'+Z+' − 2 = 0 &nbsp;⇒&nbsp; z_1 = −0,5, &nbsp; z_2 = 2','Lösungsformel'],['sin(x) = z','','rsub','Rücksubstitution'],['sin(x) = 2 ↯','Widerspruch, keine Lösung.'],['sin(x) = −0,5 &nbsp;⇒&nbsp; x_1 = '+fr('7π',6)+' &nbsp; und &nbsp; x_2 = '+fr('11π',6),'wie in Beispiel 1']])}
+ ${steps([['3·tan(x) + 2·cos(x) = 0','Der Tangens wird ersetzt: tan(x) = sin(x)/cos(x).'],['3·'+fr('sin(x)','cos(x)')+' + 2·cos(x) = 0','| · cos(x) &nbsp; Der Nenner fällt weg.'],['3·sin(x) + 2·cos²(x) = 0','cos²(x) = 1 − sin²(x) einsetzen'],['3·sin(x) + 2 − 2·sin²(x) = 0','ordnen'],['−2·sin²(x) + 3·sin(x) + 2 = 0','| · (−1)'],['2·sin²(x) − 3·sin(x) − 2 = 0','Jetzt kommt nur noch der Sinus vor.'],['z = sin(x)','','sub','Substitution'],['2'+Z+'² − 3'+Z+' − 2 = 0 &nbsp;⇒&nbsp; z_1 = −0,5, &nbsp; z_2 = 2','Lösungsformel'],['sin(x) = z','','rsub','Rücksubstitution'],['sin(x) = 2 ↯','Widerspruch, keine Lösung.'],['sin(x) = −0,5 &nbsp;⇒&nbsp; x_1 = '+fr('7π',6)+' &nbsp; und &nbsp; x_2 = '+fr('11π',6),'| sin⁻¹ und Symmetrie, wie in Beispiel 1']])}
  ${box('merke','Merke – Tangens',`<p>${M('tan(x) = '+fr('sin(x)','cos(x)'))}. Der Tangens hat die Periodenlänge ${M('π')} und nimmt jeden Wert pro Periode <strong>genau einmal</strong> an.</p><p>${M('tan(x) = c')}: nur ${M('x_1 = tan⁻¹(c)')} berechnen. Alle Lösungen: ${M('x_1k = x_1 + k·π')} mit ${M('k ∈ ℤ')}. Eine Symmetrieregel braucht man nicht.</p>`)}
  <h3>Übungen</h3>
  ${ZETTEL}
@@ -711,7 +713,7 @@ const SECS=[
  ${steps([['sin(x) + sin(2x) = 0','sin(2x) = 2·sin(x)·cos(x) einsetzen'],['sin(x) + 2·sin(x)·cos(x) = 0','Gleiche Argumente. Kein konstanter Summand: ausklammern.'],['sin(x)·(1 + 2·cos(x)) = 0','Nullprodukt'],['sin(x) = 0 &nbsp;⇒&nbsp; x_1k = 0 + k·2π &nbsp; und &nbsp; x_2k = π + k·2π, &nbsp; k ∈ ℤ','Gesucht sind alle Lösungen in ℝ.'],['cos(x) = −'+fr(1,2)+' &nbsp;⇒&nbsp; x_3k = '+fr('2π',3)+' + k·2π, &nbsp; k ∈ ℤ','erste Lösung mit cos⁻¹'],['x_4k = 2π − '+fr('2π',3)+' + k·2π = '+fr('4π',3)+' + k·2π, &nbsp; k ∈ ℤ','zweite Lösung aufgrund der Symmetrie']])}
  <h4>Beispiel 2: Doppelwinkel, Pythagoras und quadratische Gleichung</h4>
  <p>Gesucht sind die Lösungen von ${M('sin(x) − cos(2x) = 0')} für ${M('x ∈ [0; 2π]')}.</p>
- ${steps([['sin(x) − (cos²(x) − sin²(x)) = 0','cos(2x) ersetzt. Klammer wegen des Minuszeichens.'],['sin(x) − cos²(x) + sin²(x) = 0','cos²(x) = 1 − sin²(x)'],['sin(x) − 1 + sin²(x) + sin²(x) = 0','zusammenfassen'],['2·sin²(x) + sin(x) − 1 = 0','Nur noch der Sinus, mit konstantem Summanden.'],['z = sin(x)','','sub','Substitution'],['2'+Z+'² + '+Z+' − 1 = 0 &nbsp;⇒&nbsp; z_1 = −1, &nbsp; z_2 = '+fr(1,2),'Lösungsformel'],['sin(x) = z','','rsub','Rücksubstitution'],['sin(x) = −1 &nbsp;⇒&nbsp; x_1 = '+fr('3π',2),'Tiefpunkt: eine Lösung. Das Intervall ist vorgegeben, deshalb ohne k.'],['sin(x) = '+fr(1,2)+' &nbsp;⇒&nbsp; x_2 = '+fr('π',6)+' &nbsp; und &nbsp; x_3 = π − '+fr('π',6)+' = '+fr('5π',6),'zwei Lösungen über die Symmetrie']])}
+ ${steps([['sin(x) − (cos²(x) − sin²(x)) = 0','cos(2x) ersetzt. Klammer wegen des Minuszeichens.'],['sin(x) − cos²(x) + sin²(x) = 0','cos²(x) = 1 − sin²(x)'],['sin(x) − 1 + sin²(x) + sin²(x) = 0','zusammenfassen'],['2·sin²(x) + sin(x) − 1 = 0','Nur noch der Sinus, mit konstantem Summanden.'],['z = sin(x)','','sub','Substitution'],['2'+Z+'² + '+Z+' − 1 = 0 &nbsp;⇒&nbsp; z_1 = −1, &nbsp; z_2 = '+fr(1,2),'Lösungsformel'],['sin(x) = z','','rsub','Rücksubstitution'],['sin(x) = −1 &nbsp;⇒&nbsp; x_1 = '+fr('3π',2),'Tiefpunkt: eine Lösung. Das Intervall ist vorgegeben, deshalb ohne k.'],['sin(x) = '+fr(1,2)+' &nbsp;⇒&nbsp; x_2 = '+fr('π',6)+' &nbsp; und &nbsp; x_3 = π − '+fr('π',6)+' = '+fr('5π',6),'| sin⁻¹, zweite Lösung über die Symmetrie']])}
  ${box('','Fahrplan: Welches Verfahren passt?',FAHRPLAN)}
  <h3>Übungen</h3>
  ${ZETTEL}
@@ -883,7 +885,7 @@ W.sym=el=>{el.insertAdjacentHTML('beforeend',`<div class="row"><div class="seg">
   el.addEventListener('click',e=>{const f=e.target.dataset.f;if(f){fn=f;$$('.seg button',el).forEach(b=>b.classList.toggle('on',b.dataset.f===f));draw();}});
   sl.oninput=thr(draw);draws.push(draw);};
 
-W.sp=el=>{const C=SP[el.dataset.c];el.insertAdjacentHTML('beforeend',`<canvas class="cv21"></canvas><div class="steps flat">${C.rows.map((r,i)=>stRow(r,i>0)).join('')}</div><div class="row"><button class="btn sec sm" data-b>zurück</button><button class="btn orange sm" data-n>nächster Schritt</button><span class="small muted" data-i></span></div>`);
+W.sp=el=>{const C=SP[el.dataset.c];el.insertAdjacentHTML('beforeend',`<canvas class="cv21"></canvas><div class="steps flat">${radRows(C.rows).map((r,i)=>stRow(r,i>0)).join('')}</div><div class="row"><button class="btn sec sm" data-b>zurück</button><button class="btn orange sm" data-n>nächster Schritt</button><span class="small muted" data-i></span></div>`);
   const cv=$('canvas',el),rows=$$('.st',el);let n=0;
   const draw=()=>{rows.forEach((r,i)=>r.hidden=i>n);plot(cv,C.fig(C.rows[n][4]));$('[data-i]',el).textContent='Schritt '+(n+1)+' von '+rows.length;$('[data-b]',el).disabled=!n;$('[data-n]',el).disabled=n===rows.length-1;};
   $('[data-n]',el).onclick=()=>{n++;draw();};$('[data-b]',el).onclick=()=>{n--;draw();};draws.push(draw);};
